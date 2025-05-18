@@ -1,96 +1,120 @@
-# QuadroKaban
+# QuadroKaban - Kanban API
 
-## Descrição
+API REST para gerenciamento de quadros Kanban, cards, colunas, bloqueios, movimentações, relatórios e histórico de tarefas.
 
-O **QuadroKaban** é um sistema de gerenciamento de tarefas inspirado no método Kanban, desenvolvido em Java com Spring Boot.  
-Permite criar boards personalizados, adicionar colunas e cards, controlar movimentações, bloqueios e gerar relatórios detalhados de produtividade e bloqueios.
+---
 
-> **Este projeto foi desenvolvido como solução para o desafio da Digital Innovation One (DIO):  
-> [Técnicas Avançadas, Padrões e Persistência (Literalmente)](https://github.com/digitalinnovationone/exercicios-java-basico/blob/main/projetos/4%20-%20T%C3%A9cnicas%20Avan%C3%A7adas%2C%20Padr%C3%B5es%20e%20Persist%C3%AAncia%20(Literalmente).md)**
+## 🚀 Tecnologias
 
-## Funcionalidades
-
-- Menu interativo para criar, selecionar e excluir boards
-- Persistência de dados em banco relacional (MariaDB no desenvolvimento, PostgreSQL em produção)
-- Cada board possui colunas configuráveis (inicial, pendente, final, cancelamento)
-- Cards podem ser criados, movidos, bloqueados e desbloqueados conforme regras de negócio
-- Relatórios de tempo de tarefas e bloqueios por board
-- Histórico de movimentações e eventos dos cards
-
-## Tecnologias Utilizadas
-
-- Java 17
+- Java 17+
 - Spring Boot 3
 - Spring Data JPA
-- MariaDB (desenvolvimento)
-- PostgreSQL (produção)
+- MariaDB, PostgreSQL ou H2 (para desenvolvimento)
 - Gradle
-- JPA/Hibernate
-
-## Como rodar o projeto
-
-1. **Clone o repositório:**
-   ```sh
-   git clone https://github.com/SEU_USUARIO/quadrokaban.git
-   cd quadrokaban
-   ```
-
-2. **Configure o banco de dados:**
-   - Para desenvolvimento, ajuste o arquivo `src/main/resources/application-dev.yml` com os dados do seu MariaDB.
-   - Para produção, ajuste o arquivo `src/main/resources/application-prod.yml` com os dados do seu PostgreSQL.
-
-3. **Execute o projeto:**
-   - Desenvolvimento (MariaDB):
-     ```sh
-     ./gradlew bootRun
-     ```
-   - Produção (PostgreSQL):
-     ```sh
-     ./gradlew bootRun --args='--spring.profiles.active=prod'
-     ```
-
-## Estrutura do Projeto
-
-```
-src/main/java/com/reury/kabanquadro/
-  model/         # Entidades JPA
-  repository/    # Repositórios Spring Data
-  service/       # Lógica de negócio
-  controller/    # Menu CLI ou REST
-```
-
-## Modelo UML
-
-O projeto segue o seguinte modelo UML:
-
-![Modelo UML](modelo-uml.svg)
-
-### Entidades Principais
-
-- **Board**: id, nome, dataCriacao, ativo, colunas
-- **Coluna**: id, nome, ordem, tipo, boardId
-- **Card**: id, titulo, descricao, dataCriacao, bloqueado, ultimaColunaId, dataEntradaColuna, colunaId
-- **Movimentacao**: id, cardId, colunaOrigemId, colunaDestinoId, dataHoraEntrada, dataHoraSaida, tempoNaColuna
-- **Bloqueio**: id, cardId, dataHoraBloqueio, dataHoraDesbloqueio, motivoBloqueio, motivoDesbloqueio, tempoBloqueado
-- **RelatorioTarefas**: id, boardId, cardId, dataCriacao, tempoTotalNasTarefas, concluido, tempoDetalhesJson
-- **RelatorioBloqueios**: id, boardId, cardId, quantidadeBloqueios, tempoTotalBloqueado, motivosBloqueioJson, motivosDesbloqueioJson
-- **HistoricoCard**: id, cardId, boardId, tipoEvento, dataHoraEvento, descricaoEvento, detalhesJson
-
-### Regras de Negócio
-
-- Cada board deve ter pelo menos 3 colunas (inicial, final, cancelamento)
-- Só pode haver uma coluna de cada tipo especial por board (inicial, final, cancelamento)
-- Cards só podem ser movidos para a próxima coluna, exceto para cancelamento
-- Cards bloqueados não podem ser movidos
-- Bloqueio/desbloqueio exige justificativa
-- Relatórios de tempo e bloqueios disponíveis por board
 
 ---
 
-## Licença
+## ⚙️ Como rodar o projeto
 
-Este projeto é open-source, licenciado sob a [Licença MIT](LICENSE), com todos os créditos de autoria para [Reury](https://github.com/Reury).
+### 1. Clone o repositório
+
+```bash
+git clone https://github.com/seuusuario/quadrokaban.git
+cd quadrokaban
+```
+
+### 2. Configure o banco de dados
+
+Por padrão, o projeto está configurado para MariaDB.  
+Você pode usar H2 para testes rápidos.  
+Edite o arquivo `src/main/resources/application.properties` conforme seu banco:
+
+#### Exemplo para H2 (desenvolvimento):
+
+```properties
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+spring.jpa.hibernate.ddl-auto=update
+spring.h2.console.enabled=true
+```
+
+#### Exemplo para MariaDB:
+
+```properties
+spring.datasource.url=jdbc:mariadb://localhost:3306/quadrokaban
+spring.datasource.username=seuusuario
+spring.datasource.password=suasenha
+spring.jpa.hibernate.ddl-auto=update
+```
+
+### 3. Rode o projeto
+
+No terminal, execute:
+
+```bash
+gradlew bootRun
+```
+ou, se preferir Maven:
+```bash
+mvn spring-boot:run
+```
+
+Acesse: [http://localhost:8080](http://localhost:8080)
 
 ---
 
-> Para dúvidas ou sugestões, abra uma issue no repositório.
+## 📚 Principais Endpoints da API REST
+
+| Método | Endpoint                                 | Descrição                                 |
+|--------|------------------------------------------|-------------------------------------------|
+| GET    | `/api/boards`                            | Lista todos os boards ativos              |
+| POST   | `/api/boards`                            | Cria um novo board                        |
+| POST   | `/api/boards/{boardId}/colunas`          | Adiciona coluna ao board                  |
+| POST   | `/api/boards/{boardId}/cards`            | Cria card na coluna inicial               |
+| POST   | `/api/boards/cards/{cardId}/mover`       | Move card para próxima coluna             |
+| POST   | `/api/boards/cards/{cardId}/cancelar`    | Cancela card                              |
+| POST   | `/api/boards/cards/{cardId}/bloquear`    | Bloqueia card (motivo obrigatório)        |
+| POST   | `/api/boards/cards/{cardId}/desbloquear` | Desbloqueia card (motivo obrigatório)     |
+| GET    | `/api/boards/cards/{cardId}/tempo-total` | Tempo total do card                       |
+| GET    | `/api/boards/{boardId}/resumo`           | Resumo geral do board                     |
+| GET    | `/api/boards/cards/{cardId}/historico`   | Histórico detalhado do card               |
+| DELETE | `/api/boards/{boardId}`                  | Exclui board                              |
+| POST   | `/api/boards/{boardId}/arquivar`         | Arquiva board                             |
+
+> Use ferramentas como Postman, Insomnia ou o navegador para testar os endpoints.
+
+---
+
+## 📝 Regras de Negócio Implementadas
+
+- Criação de boards com colunas obrigatórias (inicial, final, cancelamento)
+- Validação de nomes duplicados para boards e colunas
+- Criação, movimentação, bloqueio/desbloqueio, cancelamento e arquivamento de cards
+- Exclusão/arquivamento de boards, cards e colunas (com integridade)
+- Relatórios de tempo, bloqueios e resumo geral
+- Histórico detalhado de cards
+- Impedimento de remoção de colunas obrigatórias
+
+---
+
+## 👨‍💻 Desenvolvimento
+
+- O projeto segue arquitetura em camadas: controllers, services, repositories e models.
+- Para contribuir, crie uma branch, faça suas alterações e abra um Pull Request.
+- Para rodar testes, utilize:
+  ```bash
+  gradlew test
+  ```
+
+---
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT.
+
+---
+
+**Dúvidas ou sugestões?**  
+Abra uma issue ou entre em contato!
