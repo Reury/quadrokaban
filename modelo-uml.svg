@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1100 900" xmlns="http://www.w3.org/2000/svg">
+  <!-- Estilo do diagrama -->
+  <style>
+    .class-box {
+      fill: #f5f5f5;
+      stroke: #333;
+      stroke-width: 2;
+    }
+    .class-title {
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      font-weight: bold;
+      text-anchor: middle;
+    }
+    .class-attr {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      text-anchor: start;
+    }
+    .relationship {
+      stroke: #333;
+      stroke-width: 2;
+      fill: none;
+    }
+    .arrow {
+      fill: #333;
+    }
+    .multiplicity {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      text-anchor: middle;
+    }
+    .separator {
+      stroke: #333;
+      stroke-width: 1;
+    }
+  </style>
+
+  <!-- Class: Board -->
+  <rect x="100" y="50" width="200" height="140" class="class-box" />
+  <text x="200" y="75" class="class-title">Board</text>
+  <line x1="100" y1="85" x2="300" y2="85" class="separator" />
+  <text x="110" y="105" class="class-attr">- id: int</text>
+  <text x="110" y="125" class="class-attr">- nome: String</text>
+  <text x="110" y="145" class="class-attr">- dataCriacao: DateTime</text>
+  <text x="110" y="165" class="class-attr">- ativo: boolean</text>
+
+  <!-- Class: Coluna -->
+  <rect x="430" y="50" width="200" height="160" class="class-box" />
+  <text x="530" y="75" class="class-title">Coluna</text>
+  <line x1="430" y1="85" x2="630" y2="85" class="separator" />
+  <text x="440" y="105" class="class-attr">- id: int</text>
+  <text x="440" y="125" class="class-attr">- nome: String</text>
+  <text x="440" y="145" class="class-attr">- ordem: int</text>
+  <text x="440" y="165" class="class-attr">- tipo: TipoColuna</text>
+  <text x="440" y="185" class="class-attr">- boardId: int</text>
+
+  <!-- Class: Card -->
+  <rect x="430" y="280" width="200" height="220" class="class-box" />
+  <text x="530" y="305" class="class-title">Card</text>
+  <line x1="430" y1="315" x2="630" y2="315" class="separator" />
+  <text x="440" y="335" class="class-attr">- id: int</text>
+  <text x="440" y="355" class="class-attr">- titulo: String</text>
+  <text x="440" y="375" class="class-attr">- descricao: String</text>
+  <text x="440" y="395" class="class-attr">- dataCriacao: DateTime</text>
+  <text x="440" y="415" class="class-attr">- bloqueado: boolean</text>
+  <text x="440" y="435" class="class-attr">- ultimaColunaId: int</text>
+  <text x="440" y="455" class="class-attr">- dataEntradaColuna: DateTime</text>
+  <text x="440" y="475" class="class-attr">- colunaId: int</text>
+
+  <!-- Class: Movimentacao -->
+  <rect x="100" y="280" width="200" height="180" class="class-box" />
+  <text x="200" y="305" class="class-title">Movimentacao</text>
+  <line x1="100" y1="315" x2="300" y2="315" class="separator" />
+  <text x="110" y="335" class="class-attr">- id: int</text>
+  <text x="110" y="355" class="class-attr">- cardId: int</text>
+  <text x="110" y="375" class="class-attr">- colunaOrigemId: int</text>
+  <text x="110" y="395" class="class-attr">- colunaDestinoId: int</text>
+  <text x="110" y="415" class="class-attr">- dataHoraEntrada: DateTime</text>
+  <text x="110" y="435" class="class-attr">- dataHoraSaida: DateTime</text>
+  <text x="110" y="455" class="class-attr">- tempoNaColuna: int</text>
+
+  <!-- Class: Bloqueio -->
+  <rect x="700" y="280" width="200" height="180" class="class-box" />
+  <text x="800" y="305" class="class-title">Bloqueio</text>
+  <line x1="700" y1="315" x2="900" y2="315" class="separator" />
+  <text x="710" y="335" class="class-attr">- id: int</text>
+  <text x="710" y="355" class="class-attr">- cardId: int</text>
+  <text x="710" y="375" class="class-attr">- dataHoraBloqueio: DateTime</text>
+  <text x="710" y="395" class="class-attr">- dataHoraDesbloqueio: DateTime</text>
+  <text x="710" y="415" class="class-attr">- motivoBloqueio: String</text>
+  <text x="710" y="435" class="class-attr">- motivoDesbloqueio: String</text>
+  <text x="710" y="455" class="class-attr">- tempoBloqueado: int</text>
+
+  <!-- Class: Enum TipoColuna -->
+  <rect x="700" y="50" width="200" height="130" class="class-box" />
+  <text x="800" y="75" class="class-title">«enumeration»</text>
+  <text x="800" y="95" class="class-title">TipoColuna</text>
+  <line x1="700" y1="105" x2="900" y2="105" class="separator" />
+  <text x="710" y="125" class="class-attr">INICIAL</text>
+  <text x="710" y="145" class="class-attr">PENDENTE</text>
+  <text x="710" y="165" class="class-attr">FINAL</text>
+  <text x="710" y="185" class="class-attr">CANCELAMENTO</text>
+
+  <!-- Class: RelatorioTarefas -->
+  <rect x="100" y="550" width="250" height="180" class="class-box" />
+  <text x="225" y="575" class="class-title">RelatorioTarefas</text>
+  <line x1="100" y1="585" x2="350" y2="585" class="separator" />
+  <text x="110" y="605" class="class-attr">- id: int</text>
+  <text x="110" y="625" class="class-attr">- boardId: int</text>
+  <text x="110" y="645" class="class-attr">- cardId: int</text>
+  <text x="110" y="665" class="class-attr">- dataCriacao: DateTime</text>
+  <text x="110" y="685" class="class-attr">- tempoTotalNasTarefas: int</text>
+  <text x="110" y="705" class="class-attr">- concluido: boolean</text>
+  <text x="110" y="725" class="class-attr">- tempoDetalhesJson: String</text>
+
+  <!-- Class: RelatorioBloqueios -->
+  <rect x="430" y="550" width="250" height="180" class="class-box" />
+  <text x="555" y="575" class="class-title">RelatorioBloqueios</text>
+  <line x1="430" y1="585" x2="680" y2="585" class="separator" />
+  <text x="440" y="605" class="class-attr">- id: int</text>
+  <text x="440" y="625" class="class-attr">- boardId: int</text>
+  <text x="440" y="645" class="class-attr">- cardId: int</text>
+  <text x="440" y="665" class="class-attr">- quantidadeBloqueios: int</text>
+  <text x="440" y="685" class="class-attr">- tempoTotalBloqueado: int</text>
+  <text x="440" y="705" class="class-attr">- motivosBloqueioJson: String</text>
+  <text x="440" y="725" class="class-attr">- motivosDesbloqueioJson: String</text>
+
+  <!-- Class: HistoricoCard -->
+  <rect x="700" y="550" width="250" height="180" class="class-box" />
+  <text x="825" y="575" class="class-title">HistoricoCard</text>
+  <line x1="700" y1="585" x2="950" y2="585" class="separator" />
+  <text x="710" y="605" class="class-attr">- id: int</text>
+  <text x="710" y="625" class="class-attr">- cardId: int</text>
+  <text x="710" y="645" class="class-attr">- boardId: int</text>
+  <text x="710" y="665" class="class-attr">- tipoEvento: TipoEvento</text>
+  <text x="710" y="685" class="class-attr">- dataHoraEvento: DateTime</text>
+  <text x="710" y="705" class="class-attr">- descricaoEvento: String</text>
+  <text x="710" y="725" class="class-attr">- detalhesJson: String</text>
+
+  <!-- Class: Enum TipoEvento -->
+  <rect x="700" y="800" width="250" height="150" class="class-box" />
+  <text x="825" y="825" class="class-title">«enumeration»</text>
+  <text x="825" y="845" class="class-title">TipoEvento</text>
+  <line x1="700" y1="855" x2="950" y2="855" class="separator" />
+  <text x="710" y="875" class="class-attr">CRIACAO</text>
+  <text x="710" y="895" class="class-attr">MOVIMENTACAO</text>
+  <text x="710" y="915" class="class-attr">BLOQUEIO</text>
+  <text x="710" y="935" class="class-attr">DESBLOQUEIO</text>
+
+  <!-- Relationships -->
+  <!-- Board to Coluna (1:N) -->
+  <line x1="300" y1="120" x2="430" y2="120" class="relationship" />
+  <polygon points="422,120 430,120 426,116 426,124" class="arrow" />
+  <text x="320" y="110" class="multiplicity">1</text>
+  <text x="410" y="110" class="multiplicity">3..*</text>
+
+  <!-- Coluna to Card (1:N) -->
+  <line x1="530" y1="210" x2="530" y2="280" class="relationship" />
+  <polygon points="530,272 530,280 526,276 534,276" class="arrow" />
+  <text x="520" y="230" class="multiplicity">1</text>
+  <text x="520" y="270" class="multiplicity">0..*</text>
+
+  <!-- Card to Movimentacao (1:N) -->
+  <line x1="430" y1="360" x2="300" y2="360" class="relationship" />
+  <polygon points="308,360 300,360 304,356 304,364" class="arrow" />
+  <text x="320" y="350" class="multiplicity">1</text>
+  <text x="410" y="350" class="multiplicity">1..*</text>
+
+  <!-- Card to Bloqueio (1:N) -->
+  <line x1="630" y1="360" x2="700" y2="360" class="relationship" />
+  <polygon points="692,360 700,360 696,356 696,364" class="arrow" />
+  <text x="650" y="350" class="multiplicity">1</text>
+  <text x="690" y="350" class="multiplicity">0..*</text>
+
+  <!-- Enum TipoColuna relationship to Coluna -->
+  <path d="M700,140 Q665,140 665,160 Q665,180 680,180 L680,180" class="relationship" stroke-dasharray="5,5" />
+  <polygon points="672,180 680,180 676,176 676,184" class="arrow" />
+
+  <!-- Card to HistoricoCard (1:N) -->
+  <path d="M530,500 L530,530 L825,530 L825,550" class="relationship" />
+  <polygon points="825,542 825,550 821,546 829,546" class="arrow" />
+  <text x="540" y="520" class="multiplicity">1</text>
+  <text x="815" y="540" class="multiplicity">1..*</text>
+
+  <!-- Board to RelatorioTarefas (1:N) -->
+  <path d="M200,190 Q200,400 225,550" class="relationship" />
+  <polygon points="221,542 225,550 229,542" class="arrow" />
+  <text x="190" y="350" class="multiplicity">1</text>
+  <text x="215" y="540" class="multiplicity">0..*</text>
+
+  <!-- Board to RelatorioBloqueios (1:N) -->
+  <path d="M250,190 Q350,400 555,550" class="relationship" />
+  <polygon points="549,543 555,550 561,543" class="arrow" />
+  <text x="350" y="350" class="multiplicity">1</text>
+  <text x="545" y="540" class="multiplicity">0..*</text>
+
+  <!-- Enum TipoEvento relationship to HistoricoCard -->
+  <path d="M825,730 L825,800" class="relationship" stroke-dasharray="5,5" />
+  <polygon points="825,792 825,800 821,796 829,796" class="arrow" />
+</svg>
