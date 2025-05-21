@@ -8,7 +8,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class Bloqueio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,19 +31,5 @@ public class Bloqueio {
     private String motivoDesbloqueio;
     private int tempoBloqueado;
 
-    // getters e setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Card getCard() { return card; }
-    public void setCard(Card card) { this.card = card; }
-    public LocalDateTime getDataHoraBloqueio() { return dataHoraBloqueio; }
-    public void setDataHoraBloqueio(LocalDateTime dataHoraBloqueio) { this.dataHoraBloqueio = dataHoraBloqueio; }
-    public LocalDateTime getDataHoraDesbloqueio() { return dataHoraDesbloqueio; }
-    public void setDataHoraDesbloqueio(LocalDateTime dataHoraDesbloqueio) { this.dataHoraDesbloqueio = dataHoraDesbloqueio; }
-    public String getMotivoBloqueio() { return motivoBloqueio; }
-    public void setMotivoBloqueio(String motivoBloqueio) { this.motivoBloqueio = motivoBloqueio; }
-    public String getMotivoDesbloqueio() { return motivoDesbloqueio; }
-    public void setMotivoDesbloqueio(String motivoDesbloqueio) { this.motivoDesbloqueio = motivoDesbloqueio; }
-    public int getTempoBloqueado() { return tempoBloqueado; }
-    public void setTempoBloqueado(int tempoBloqueado) { this.tempoBloqueado = tempoBloqueado; }
+
 }

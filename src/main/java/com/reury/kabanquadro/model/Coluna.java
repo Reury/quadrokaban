@@ -1,8 +1,14 @@
 package com.reury.kabanquadro.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class Coluna {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,32 +29,11 @@ public class Coluna {
 
     private boolean arquivado = false; // novo campo
 
-    public Coluna() {} // construtor padrão
-
     public Coluna(String nome, int ordem, TipoColuna tipo, Board board) {
     this.nome = nome;
     this.ordem = ordem;
     this.tipo = tipo;
     this.board = board;
-    }
-
-    // getters e setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
-    public int getOrdem() { return ordem; }
-    public void setOrdem(int ordem) { this.ordem = ordem; }
-    public TipoColuna getTipo() { return tipo; }
-    public void setTipo(TipoColuna tipo) { this.tipo = tipo; }
-    public Board getBoard() { return board; }
-    public void setBoard(Board board) { this.board = board; }
-    public java.util.List<Card> getCards() {
-        return cards;
-    }
-
-    public void setCards(java.util.List<Card> cards) {
-        this.cards = cards;
     }
 
     public boolean isArquivado() { return arquivado; }

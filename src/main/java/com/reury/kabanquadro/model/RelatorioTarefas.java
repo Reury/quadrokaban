@@ -2,8 +2,14 @@ package com.reury.kabanquadro.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class RelatorioTarefas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,19 +28,5 @@ public class RelatorioTarefas {
     private boolean concluido;
     private String tempoDetalhesJson;
 
-    // getters e setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Board getBoard() { return board; }
-    public void setBoard(Board board) { this.board = board; }
-    public Card getCard() { return card; }
-    public void setCard(Card card) { this.card = card; }
-    public LocalDateTime getDataCriacao() { return dataCriacao; }
-    public void setDataCriacao(LocalDateTime dataCriacao) { this.dataCriacao = dataCriacao; }
-    public int getTempoTotalNasTarefas() { return tempoTotalNasTarefas; }
-    public void setTempoTotalNasTarefas(int tempoTotalNasTarefas) { this.tempoTotalNasTarefas = tempoTotalNasTarefas; }
-    public boolean isConcluido() { return concluido; }
-    public void setConcluido(boolean concluido) { this.concluido = concluido; }
-    public String getTempoDetalhesJson() { return tempoDetalhesJson; }
-    public void setTempoDetalhesJson(String tempoDetalhesJson) { this.tempoDetalhesJson = tempoDetalhesJson; }
+
 }
