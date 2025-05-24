@@ -9,7 +9,8 @@ API REST para gerenciamento de quadros Kanban, cards, colunas, bloqueios, movime
 - Java 17+
 - Spring Boot 3
 - Spring Data JPA
-- MapStruct (para mapeamento entre entidades e DTOs)
+- MapStruct (mapeamento entre entidades e DTOs)
+- DAOs customizados para consultas otimizadas
 - MariaDB, PostgreSQL ou H2 (para desenvolvimento)
 - Gradle
 
@@ -123,7 +124,10 @@ Siga as instruções no terminal para navegar pelo menu e testar as funcionalida
 | POST   | `/api/boards/cards/{cardId}/desbloquear` | Desbloqueia card (motivo obrigatório)     |
 | GET    | `/api/boards/cards/{cardId}/tempo-total` | Tempo total do card                       |
 | GET    | `/api/boards/{boardId}/resumo`           | Resumo geral do board                     |
-| GET    | `/api/boards/cards/{cardId}/historico`   | Histórico detalhado do card               |
+| GET    | `/api/boards/cards/{cardId}/historico`   | Histórico do card                         |
+| GET    | `/api/boards/{boardId}/bloqueios`        | Relatório de bloqueios do board           |
+| GET    | `/api/boards/{boardId}/relatorio-tarefas`| Relatório de tarefas do board             |
+| GET    | `/api/boards/cards/{cardId}/historico-detalhado` | Histórico detalhado do card        |
 | DELETE | `/api/boards/{boardId}`                  | Exclui board                              |
 | POST   | `/api/boards/{boardId}/arquivar`         | Arquiva board                             |
 
@@ -148,13 +152,22 @@ Siga as instruções no terminal para navegar pelo menu e testar as funcionalida
 - **Implementação de DTOs** para todas as entidades expostas na API, aumentando a segurança e flexibilidade.
 - **Uso de MapStruct** para conversão automática entre entidades JPA e DTOs, reduzindo código repetitivo.
 - **Controllers agora expõem apenas DTOs**, seguindo boas práticas REST.
+- **Implementação de DAOs customizados** para consultas e relatórios otimizados.
+- **Endpoints REST para relatórios e histórico detalhado** integrados à API.
 - **Roadmap atualizado** para refletir as próximas melhorias planejadas.
+
+---
+
+## 👨‍💻 Arquitetura
+
+- O projeto segue arquitetura em camadas: **controllers**, **services**, **DAOs** (para consultas customizadas), **repositories** (CRUD), **models** (entidades) e **DTOs**.
+- DAOs são usados para consultas complexas e relatórios, retornando DTOs prontos para a API.
+- Controllers nunca expõem entidades JPA diretamente, apenas DTOs.
 
 ---
 
 ## 👨‍💻 Desenvolvimento
 
-- O projeto segue arquitetura em camadas: controllers, services, repositories e models.
 - Para contribuir, crie uma branch, faça suas alterações e abra um Pull Request.
 - Para rodar testes, utilize:
   ```bash
@@ -167,7 +180,7 @@ Siga as instruções no terminal para navegar pelo menu e testar as funcionalida
 
 - [x] Implementar DTOs para exposição segura e flexível dos dados na API
 - [x] Implementar mapeamento automático com MapStruct
-- [ ] Implementar DAOs para consultas customizadas e otimização de queries
+- [x] Implementar DAOs para consultas customizadas e otimização de queries
 - [ ] Evoluir o CLI para suportar relatórios e histórico
 - [ ] Melhorar interface do CLI
 - [ ] Adicionar autenticação e autorização
