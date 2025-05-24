@@ -25,43 +25,86 @@ cd quadrokaban
 
 ### 2. Configure o banco de dados
 
-Por padrão, o projeto está configurado para MariaDB.  
-Você pode usar H2 para testes rápidos.  
-Edite o arquivo `src/main/resources/application.properties` conforme seu banco:
+Por padrão, o projeto está configurado para MariaDB no perfil `dev`.
+Você pode usar H2 para testes rápidos ou configurar para PostgreSQL.
+
+Os arquivos de configuração principais são:
+- `src/main/resources/application.yml` (configurações comuns e perfil ativo)
+- `src/main/resources/application-dev.yml` (configurações para desenvolvimento)
+- `src/main/resources/application-prod.yml` (configurações para produção)
 
 #### Exemplo para H2 (desenvolvimento):
 
-```properties
-spring.datasource.url=jdbc:h2:mem:testdb
-spring.datasource.driver-class-name=org.h2.Driver
-spring.datasource.username=sa
-spring.datasource.password=
-spring.jpa.hibernate.ddl-auto=update
-spring.h2.console.enabled=true
+Crie um arquivo `src/main/resources/application-h2.yml`:
+```yaml
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none # Liquibase cuidará do schema
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+```
+Para ativar o perfil H2, altere em `application.yml` ou use variável de ambiente.
+
+#### Configuração para MariaDB (perfil `dev`):
+
+Veja `src/main/resources/application-dev.yml`:
+```yaml
+spring:
+  datasource:
+    url: jdbc:mariadb://127.0.0.1:3306/quadrokaban
+    username: devuser
+    password: devpass
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    database-platform: org.hibernate.dialect.MariaDBDialect
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
 ```
 
-#### Exemplo para MariaDB:
+### 3. Execute a aplicação
 
-```properties
-spring.datasource.url=jdbc:mariadb://localhost:3306/quadrokaban
-spring.datasource.username=seuusuario
-spring.datasource.password=suasenha
-spring.jpa.hibernate.ddl-auto=update
-```
-
-### 3. Rode o projeto
-
-No terminal, execute:
+Você pode rodar a aplicação usando o Gradle:
 
 ```bash
-gradlew bootRun
-```
-ou, se preferir Maven:
-```bash
-mvn spring-boot:run
+./gradlew bootRun
 ```
 
-Acesse: [http://localhost:8080](http://localhost:8080)
+Por padrão, o perfil `dev` será ativado (conforme `application.yml`).
+Para usar outro perfil (ex: `prod` ou `h2`):
+
+```bash
+./gradlew bootRun -Dspring.profiles.active=prod
+```
+
+A API estará disponível em `http://localhost:8080` (ou a porta configurada).
+
+---
+
+## 🖥️ CLI de Exemplo
+
+O projeto inclui um CLI simples para facilitar testes e demonstrações.  
+Com ele, você pode criar boards, adicionar colunas, criar e mover cards, bloquear/desbloquear/cancelar cards, entre outras operações básicas.
+
+> ⚠️ Funcionalidades de relatório e histórico detalhado estão disponíveis apenas via endpoints REST.
+
+### Como rodar o CLI
+
+Execute normalmente:
+```bash
+./gradlew bootRun
+```
+Siga as instruções no terminal para navegar pelo menu e testar as funcionalidades.
 
 ---
 
@@ -93,8 +136,8 @@ Acesse: [http://localhost:8080](http://localhost:8080)
 - Validação de nomes duplicados para boards e colunas
 - Criação, movimentação, bloqueio/desbloqueio, cancelamento e arquivamento de cards
 - Exclusão/arquivamento de boards, cards e colunas (com integridade)
-- Relatórios de tempo, bloqueios e resumo geral
-- Histórico detalhado de cards
+- Relatórios de tempo, bloqueios e resumo geral (apenas via API)
+- Histórico detalhado de cards (apenas via API)
 - Impedimento de remoção de colunas obrigatórias
 
 ---
@@ -105,9 +148,20 @@ Acesse: [http://localhost:8080](http://localhost:8080)
 - Para contribuir, crie uma branch, faça suas alterações e abra um Pull Request.
 - Para rodar testes, utilize:
   ```bash
-  gradlew test
+  ./gradlew test
   ```
 
+---
+
+## 🚧 Roadmap
+
+- [ ] Evoluir o CLI para suportar relatórios e histórico
+- [ ] Melhorar interface do CLI
+- [ ] Adicionar autenticação e autorização
+- [ ] Implementar testes automatizados 
+- [ ] Configurar CI/CD básico (ex: GitHub Actions)
+- [ ] Implementar logging estruturado
+- [ ] Documentação OpenAPI/Swagger
 ---
 
 ## 📄 Licença

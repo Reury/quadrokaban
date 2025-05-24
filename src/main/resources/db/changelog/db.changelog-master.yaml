@@ -1,0 +1,313 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Reury
+      changes:
+        - createTable:
+            tableName: board
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: nome
+                  type: VARCHAR(255)
+              - column:
+                  name: data_criacao
+                  type: DATETIME
+              - column:
+                  name: ativo
+                  type: BOOLEAN
+              - column:
+                  name: arquivado
+                  type: BOOLEAN
+
+  - changeSet:
+      id: 2
+      author: Reury
+      changes:
+        - createTable:
+            tableName: coluna
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: nome
+                  type: VARCHAR(255)
+              - column:
+                  name: ordem
+                  type: INT
+              - column:
+                  name: tipo
+                  type: VARCHAR(50)
+              - column:
+                  name: board_id
+                  type: BIGINT
+              - column:
+                  name: arquivado
+                  type: BOOLEAN
+        - addForeignKeyConstraint:
+            baseTableName: coluna
+            baseColumnNames: board_id
+            referencedTableName: board
+            referencedColumnNames: id
+            constraintName: fk_coluna_board
+
+  - changeSet:
+      id: 3
+      author: Reury
+      changes:
+        - createTable:
+            tableName: card
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: titulo
+                  type: VARCHAR(255)
+              - column:
+                  name: descricao
+                  type: TEXT
+              - column:
+                  name: data_criacao
+                  type: DATETIME
+              - column:
+                  name: bloqueado
+                  type: BOOLEAN
+              - column:
+                  name: arquivado
+                  type: BOOLEAN
+              - column:
+                  name: coluna_id
+                  type: BIGINT
+              - column:
+                  name: ultima_coluna_id
+                  type: BIGINT
+              - column:
+                  name: data_entrada_coluna
+                  type: DATETIME
+        - addForeignKeyConstraint:
+            baseTableName: card
+            baseColumnNames: coluna_id
+            referencedTableName: coluna
+            referencedColumnNames: id
+            constraintName: fk_card_coluna
+
+  - changeSet:
+      id: 4
+      author: Reury
+      changes:
+        - createTable:
+            tableName: bloqueio
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: card_id
+                  type: BIGINT
+              - column:
+                  name: data_hora_bloqueio
+                  type: DATETIME
+              - column:
+                  name: data_hora_desbloqueio
+                  type: DATETIME
+              - column:
+                  name: motivo_bloqueio
+                  type: VARCHAR(255)
+              - column:
+                  name: motivo_desbloqueio
+                  type: VARCHAR(255)
+              - column:
+                  name: tempo_bloqueado
+                  type: INT
+        - addForeignKeyConstraint:
+            baseTableName: bloqueio
+            baseColumnNames: card_id
+            referencedTableName: card
+            referencedColumnNames: id
+            constraintName: fk_bloqueio_card
+
+  - changeSet:
+      id: 5
+      author: Reury
+      changes:
+        - createTable:
+            tableName: movimentacao
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: card_id
+                  type: BIGINT
+              - column:
+                  name: coluna_origem_id
+                  type: BIGINT
+              - column:
+                  name: coluna_destino_id
+                  type: BIGINT
+              - column:
+                  name: data_hora_entrada
+                  type: DATETIME
+              - column:
+                  name: data_hora_saida
+                  type: DATETIME
+              - column:
+                  name: tempo_na_coluna
+                  type: BIGINT
+        - addForeignKeyConstraint:
+            baseTableName: movimentacao
+            baseColumnNames: card_id
+            referencedTableName: card
+            referencedColumnNames: id
+            constraintName: fk_mov_card
+
+  - changeSet:
+      id: 6
+      author: Reury
+      changes:
+        - createTable:
+            tableName: historico_card
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: card_id
+                  type: BIGINT
+              - column:
+                  name: board_id
+                  type: BIGINT
+              - column:
+                  name: tipo_evento
+                  type: VARCHAR(50)
+              - column:
+                  name: data_hora_evento
+                  type: DATETIME
+              - column:
+                  name: descricao_evento
+                  type: VARCHAR(255)
+              - column:
+                  name: detalhes_json
+                  type: TEXT
+        - addForeignKeyConstraint:
+            baseTableName: historico_card
+            baseColumnNames: card_id
+            referencedTableName: card
+            referencedColumnNames: id
+            constraintName: fk_hist_card
+        - addForeignKeyConstraint:
+            baseTableName: historico_card
+            baseColumnNames: board_id
+            referencedTableName: board
+            referencedColumnNames: id
+            constraintName: fk_hist_board
+
+  - changeSet:
+      id: 7
+      author: Reury
+      changes:
+        - createTable:
+            tableName: relatorio_bloqueios
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: board_id
+                  type: BIGINT
+              - column:
+                  name: card_id
+                  type: BIGINT
+              - column:
+                  name: quantidade_bloqueios
+                  type: INT
+              - column:
+                  name: tempo_total_bloqueado
+                  type: INT
+              - column:
+                  name: motivos_bloqueio_json
+                  type: TEXT
+              - column:
+                  name: motivos_desbloqueio_json
+                  type: TEXT
+        - addForeignKeyConstraint:
+            baseTableName: relatorio_bloqueios
+            baseColumnNames: board_id
+            referencedTableName: board
+            referencedColumnNames: id
+            constraintName: fk_rel_bloqueios_board
+        - addForeignKeyConstraint:
+            baseTableName: relatorio_bloqueios
+            baseColumnNames: card_id
+            referencedTableName: card
+            referencedColumnNames: id
+            constraintName: fk_rel_bloqueios_card
+
+  - changeSet:
+      id: 8
+      author: Reury
+      changes:
+        - createTable:
+            tableName: relatorio_tarefas
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: board_id
+                  type: BIGINT
+              - column:
+                  name: card_id
+                  type: BIGINT
+              - column:
+                  name: data_criacao
+                  type: DATETIME
+              - column:
+                  name: tempo_total_nas_tarefas
+                  type: INT
+              - column:
+                  name: concluido
+                  type: BOOLEAN
+              - column:
+                  name: tempo_detalhes_json
+                  type: TEXT
+        - addForeignKeyConstraint:
+            baseTableName: relatorio_tarefas
+            baseColumnNames: board_id
+            referencedTableName: board
+            referencedColumnNames: id
+            constraintName: fk_rel_tarefas_board
+        - addForeignKeyConstraint:
+            baseTableName: relatorio_tarefas
+            baseColumnNames: card_id
+            referencedTableName: card
+            referencedColumnNames: id
+            constraintName: fk_rel_tarefas_card

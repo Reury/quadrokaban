@@ -1,6 +1,8 @@
 package com.reury.kabanquadro.model;
 
 import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
@@ -20,22 +22,19 @@ public class Coluna {
     @Enumerated(EnumType.STRING)
     private TipoColuna tipo;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
 
-    @OneToMany(mappedBy = "coluna", cascade = CascadeType.ALL, orphanRemoval = true)
-    private java.util.List<Card> cards;
+    @OneToMany(mappedBy = "coluna", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private Set<Card> cards = new HashSet<>();
 
-    private boolean arquivado = false; // novo campo
+    private boolean arquivado = false;
 
     public Coluna(String nome, int ordem, TipoColuna tipo, Board board) {
-    this.nome = nome;
-    this.ordem = ordem;
-    this.tipo = tipo;
-    this.board = board;
+        this.nome = nome;
+        this.ordem = ordem;
+        this.tipo = tipo;
+        this.board = board;
     }
-
-    public boolean isArquivado() { return arquivado; }
-    public void setArquivado(boolean arquivado) { this.arquivado = arquivado; }
 }

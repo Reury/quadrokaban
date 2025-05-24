@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class BoardService {
@@ -36,7 +38,7 @@ public class BoardService {
         board.setAtivo(true);
 
         // Criar colunas obrigatórias
-        List<Coluna> colunas = new ArrayList<>();
+        Set<Coluna> colunas = new HashSet<>();
         colunas.add(new Coluna("Inicial", 1, TipoColuna.INICIAL, board));
         colunas.add(new Coluna("Pendente", 2, TipoColuna.PENDENTE, board));
         colunas.add(new Coluna("Final", 3, TipoColuna.FINAL, board));
@@ -65,11 +67,19 @@ public class BoardService {
     }
 
     public Board buscarPorId(Long id) {
-        return boardRepository.findById(id)
+        return boardRepository.findByIdAndArquivadoFalse(id)
             .orElseThrow(() -> new IllegalArgumentException("Board não encontrado!"));
     }
 
     public List<Board> listarBoardsAtivos() {
         return boardRepository.findByArquivadoFalse();
+    }
+
+    public Board buscarBoardComColunas(Long id) {
+        Board board = boardRepository.findByIdAndArquivadoFalse(id)
+            .orElseThrow(() -> new IllegalArgumentException("Board não encontrado!"));
+        // Força a inicialização dos cards de cada coluna
+        board.getColunas().forEach(coluna -> coluna.getCards().size());
+        return board;
     }
 }

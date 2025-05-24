@@ -19,14 +19,11 @@ public class Card {
     private String descricao;
     private LocalDateTime dataCriacao;
     private boolean bloqueado;
-    private boolean arquivado; // novo campo
-
-    @ManyToOne
-    @JoinColumn(name = "coluna_id")
-    private Coluna coluna;
-
     private Long ultimaColunaId;
     private LocalDateTime dataEntradaColuna;
+    private boolean arquivado = false;
 
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coluna_id")
+    private Coluna coluna;
 }
