@@ -27,6 +27,8 @@ public class BoardController {
     private GestaoService gestaoService;
     @Autowired
     private HistoricoService historicoService;
+    @Autowired
+    private BloqueioService bloqueioService;
 
     @Autowired
     private BoardMapper boardMapper;
@@ -139,5 +141,21 @@ public class BoardController {
     public void arquivarBoard(@PathVariable Long boardId) {
         Board board = boardService.buscarPorId(boardId);
         gestaoService.arquivarBoard(board);
+    }
+
+    // Exemplo de endpoint no controller
+    @GetMapping("/{boardId}/bloqueios")
+    public List<BloqueioDto> listarBloqueiosPorBoard(@PathVariable Long boardId) {
+        return bloqueioService.listarBloqueiosPorBoard(boardId);
+    }
+
+    @GetMapping("/{boardId}/relatorio-tarefas")
+    public List<RelatorioTarefasDto> relatorioTarefas(@PathVariable Long boardId) {
+        return relatorioService.listarRelatorioPorBoard(boardId);
+    }
+
+    @GetMapping("/cards/{cardId}/historico-detalhado")
+    public List<HistoricoCardDto> historicoDetalhado(@PathVariable Long cardId) {
+        return historicoService.listarHistoricoPorCard(cardId);
     }
 }

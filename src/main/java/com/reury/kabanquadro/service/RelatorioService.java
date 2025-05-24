@@ -1,5 +1,7 @@
 package com.reury.kabanquadro.service;
 
+import com.reury.kabanquadro.dao.RelatorioTarefasDao;
+import com.reury.kabanquadro.dto.RelatorioTarefasDto;
 import com.reury.kabanquadro.model.*;
 import com.reury.kabanquadro.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +12,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class RelatorioService {
-
+    @Autowired
+    private RelatorioTarefasDao relatorioTarefasDao;
     @Autowired
     private MovimentacaoRepository movimentacaoRepository;
     @Autowired
     private BloqueioRepository bloqueioRepository;
+
+    public List<RelatorioTarefasDto> listarRelatorioPorBoard(Long boardId) {
+        return relatorioTarefasDao.listarRelatorioPorBoard(boardId);
+    }
 
     // Tempo total do card
     public long tempoTotalCard(Card card) {

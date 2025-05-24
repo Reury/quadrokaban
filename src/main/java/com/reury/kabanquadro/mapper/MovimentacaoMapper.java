@@ -8,12 +8,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface MovimentacaoMapper {
     @Mapping(source = "card.id", target = "cardId")
-    @Mapping(source = "colunaOrigem.id", target = "colunaOrigemId")
-    @Mapping(source = "colunaDestino.id", target = "colunaDestinoId")
     MovimentacaoDto toDto(Movimentacao movimentacao);
 
     @Mapping(source = "cardId", target = "card.id")
-    @Mapping(source = "colunaOrigemId", target = "colunaOrigem.id")
-    @Mapping(source = "colunaDestinoId", target = "colunaDestino.id")
     Movimentacao toEntity(MovimentacaoDto dto);
 }

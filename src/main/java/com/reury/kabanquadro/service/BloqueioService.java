@@ -1,25 +1,35 @@
 package com.reury.kabanquadro.service;
 
+import com.reury.kabanquadro.dao.BloqueioDao;
+import com.reury.kabanquadro.dto.BloqueioDto;
 import com.reury.kabanquadro.model.*;
-import com.reury.kabanquadro.repository.BloqueioRepository;
 import com.reury.kabanquadro.repository.CardRepository;
 import com.reury.kabanquadro.repository.HistoricoCardRepository;
+import com.reury.kabanquadro.repository.BloqueioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class BloqueioService {
 
     @Autowired
-    private BloqueioRepository bloqueioRepository;
+    private BloqueioDao bloqueioDao;
 
     @Autowired
     private CardRepository cardRepository;
 
     @Autowired
     private HistoricoCardRepository historicoCardRepository;
+
+    @Autowired
+    private BloqueioRepository bloqueioRepository; // Adicione isso
+
+    public List<BloqueioDto> listarBloqueiosPorBoard(Long boardId) {
+        return bloqueioDao.listarBloqueiosPorBoard(boardId);
+    }
 
     // Bloqueia um card
     public Bloqueio bloquearCard(Card card, String motivo) {
@@ -37,7 +47,7 @@ public class BloqueioService {
         bloqueio.setCard(card);
         bloqueio.setDataHoraBloqueio(LocalDateTime.now());
         bloqueio.setMotivoBloqueio(motivo);
-        bloqueioRepository.save(bloqueio);
+        bloqueioRepository.save(bloqueio); // Use o repository aqui
 
         // Registrar histórico
         HistoricoCard historico = new HistoricoCard();
@@ -71,7 +81,7 @@ public class BloqueioService {
                         bloqueio.getDataHoraBloqueio(), bloqueio.getDataHoraDesbloqueio()
                 ).toSeconds()
         );
-        bloqueioRepository.save(bloqueio);
+        bloqueioRepository.save(bloqueio); // Use o repository aqui
 
         card.setBloqueado(false);
         cardRepository.save(card);
