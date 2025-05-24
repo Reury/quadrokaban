@@ -50,7 +50,7 @@ public class BoardService {
     }
 
     public Coluna adicionarColuna(Board board, String nomeNovaColuna, int ordem, TipoColuna tipoColuna) {
-        // Validar coluna
+        // Validar nome da coluna
         if (nomeNovaColuna == null || nomeNovaColuna.isBlank()) {
             throw new IllegalArgumentException("Nome da coluna é obrigatório.");
         }
@@ -58,6 +58,20 @@ public class BoardService {
             .anyMatch(coluna -> coluna.getNome().equalsIgnoreCase(nomeNovaColuna));
         if (nomeDuplicado) {
             throw new IllegalArgumentException("Já existe uma coluna com esse nome neste board.");
+        }
+
+        // Impedir tipos duplicados
+        boolean tipoDuplicado = board.getColunas().stream()
+            .anyMatch(coluna -> coluna.getTipo() == tipoColuna);
+        if (tipoDuplicado && (tipoColuna == TipoColuna.INICIAL || tipoColuna == TipoColuna.FINAL || tipoColuna == TipoColuna.CANCELAMENTO)) {
+            throw new IllegalArgumentException("Já existe uma coluna obrigatória deste tipo no board.");
+        }
+
+        // Validar ordem da coluna
+        boolean ordemDuplicada = board.getColunas().stream()
+            .anyMatch(coluna -> coluna.getOrdem() == ordem);
+        if (ordemDuplicada) {
+            throw new IllegalArgumentException("Já existe uma coluna com essa ordem neste board.");
         }
 
         // Adicionar coluna
@@ -82,5 +96,35 @@ public class BoardService {
         // Força a inicialização dos cards de cada coluna
         board.getColunas().forEach(coluna -> coluna.getCards().size());
         return board;
+    }
+
+    public void excluirBoard(Board board) {
+        // Verifica se o board está arquivado
+        if (board.isAtivo()) {
+            throw new IllegalStateException("Não é permitido excluir boards ativos.");
+        }
+
+        // Verifica se o board possui cards ativos
+        boolean temCardsAtivos = board.getColunas().stream()
+            .anyMatch(coluna -> !coluna.getCards().isEmpty());
+        if (temCardsAtivos) {
+            throw new IllegalStateException("Não é permitido excluir boards com cards ativos.");
+        }
+
+        // Excluir board
+        boardRepository.delete(board);
+    }
+
+    public void arquivarBoard(Board board) {
+        // Verifica se o board possui cards ativos
+        boolean temCardsAtivos = board.getColunas().stream()
+            .anyMatch(coluna -> !coluna.getCards().isEmpty());
+        if (temCardsAtivos) {
+            throw new IllegalStateException("Não é permitido arquivar boards com cards ativos.");
+        }
+
+        // Arquivar board
+        board.setAtivo(false);
+        boardRepository.save(board);
     }
 }
