@@ -9,6 +9,7 @@ API REST para gerenciamento de quadros Kanban, cards, colunas, bloqueios, movime
 - Java 17+
 - Spring Boot 3
 - Spring Data JPA
+- MapStruct (para mapeamento entre entidades e DTOs)
 - MariaDB, PostgreSQL ou H2 (para desenvolvimento)
 - Gradle
 
@@ -142,6 +143,15 @@ Siga as instruções no terminal para navegar pelo menu e testar as funcionalida
 
 ---
 
+## 🆕 Principais Alterações Recentes
+
+- **Implementação de DTOs** para todas as entidades expostas na API, aumentando a segurança e flexibilidade.
+- **Uso de MapStruct** para conversão automática entre entidades JPA e DTOs, reduzindo código repetitivo.
+- **Controllers agora expõem apenas DTOs**, seguindo boas práticas REST.
+- **Roadmap atualizado** para refletir as próximas melhorias planejadas.
+
+---
+
 ## 👨‍💻 Desenvolvimento
 
 - O projeto segue arquitetura em camadas: controllers, services, repositories e models.
@@ -155,6 +165,9 @@ Siga as instruções no terminal para navegar pelo menu e testar as funcionalida
 
 ## 🚧 Roadmap
 
+- [x] Implementar DTOs para exposição segura e flexível dos dados na API
+- [x] Implementar mapeamento automático com MapStruct
+- [ ] Implementar DAOs para consultas customizadas e otimização de queries
 - [ ] Evoluir o CLI para suportar relatórios e histórico
 - [ ] Melhorar interface do CLI
 - [ ] Adicionar autenticação e autorização
@@ -162,6 +175,7 @@ Siga as instruções no terminal para navegar pelo menu e testar as funcionalida
 - [ ] Configurar CI/CD básico (ex: GitHub Actions)
 - [ ] Implementar logging estruturado
 - [ ] Documentação OpenAPI/Swagger
+
 ---
 
 ## 📄 Licença

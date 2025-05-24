@@ -49,7 +49,7 @@ public class BoardService {
         return boardRepository.save(board);
     }
 
-    public void adicionarColuna(Board board, String nomeNovaColuna, int ordem, TipoColuna tipoColuna) {
+    public Coluna adicionarColuna(Board board, String nomeNovaColuna, int ordem, TipoColuna tipoColuna) {
         // Validar coluna
         if (nomeNovaColuna == null || nomeNovaColuna.isBlank()) {
             throw new IllegalArgumentException("Nome da coluna é obrigatório.");
@@ -64,6 +64,7 @@ public class BoardService {
         Coluna novaColuna = new Coluna(nomeNovaColuna, ordem, tipoColuna, board);
         board.getColunas().add(novaColuna);
         boardRepository.save(board);
+        return novaColuna;
     }
 
     public Board buscarPorId(Long id) {
