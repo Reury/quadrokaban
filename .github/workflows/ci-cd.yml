@@ -47,10 +47,13 @@ jobs:
       - name: Permitir execução do Gradle Wrapper
         run: chmod +x ./gradlew
 
+      - name: Instalar netcat
+        run: sudo apt-get update && sudo apt-get install -y netcat
+
       - name: Esperar o MariaDB subir
         run: |
           for i in {1..30}; do
-            nc -z 127.0.0.1 3306 && echo "MariaDB está pronto!" && exit 0
+            nc -z localhost 3306 && echo "MariaDB está pronto!" && exit 0
             echo "Aguardando MariaDB subir..."
             sleep 2
           done
