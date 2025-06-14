@@ -47,8 +47,6 @@ jobs:
       - name: Permitir execução do Gradle Wrapper
         run: chmod +x ./gradlew
 
-      - name: Instalar netcat
-        run: sudo apt-get update && sudo apt-get install -y netcat-traditional
 
       - name: Build e Testes
         env:
