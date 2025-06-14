@@ -11,7 +11,8 @@ API REST para gerenciamento de quadros Kanban, cards, colunas, bloqueios, movime
 - Spring Data JPA
 - MapStruct (mapeamento entre entidades e DTOs)
 - DAOs customizados para consultas otimizadas
-- MariaDB, PostgreSQL ou H2 (para desenvolvimento)
+- **MariaDB** (banco padrão para todos os ambientes)
+- H2 (opcional para testes rápidos)
 - Gradle
 
 ---
@@ -27,15 +28,73 @@ cd quadrokaban
 
 ### 2. Configure o banco de dados
 
-Por padrão, o projeto está configurado para MariaDB no perfil `dev`.
-Você pode usar H2 para testes rápidos ou configurar para PostgreSQL.
+Por padrão, o projeto está configurado para **MariaDB** no perfil `dev` e produção.
 
 Os arquivos de configuração principais são:
 - `src/main/resources/application.yml` (configurações comuns e perfil ativo)
 - `src/main/resources/application-dev.yml` (configurações para desenvolvimento)
 - `src/main/resources/application-prod.yml` (configurações para produção)
 
-#### Exemplo para H2 (desenvolvimento):
+#### Exemplo para MariaDB (desenvolvimento):
+
+Veja `src/main/resources/application-dev.yml`:
+```yaml
+spring:
+  datasource:
+    url: jdbc:mariadb://127.0.0.1:3306/quadrokaban
+    username: devuser
+    password: devpass
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    database-platform: org.hibernate.dialect.MariaDBDialect
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+```
+
+#### Exemplo para MariaDB (produção):
+
+Veja `src/main/resources/application-prod.yml`:
+```yaml
+spring:
+  datasource:
+    url: jdbc:mariadb://<host>:<porta>/<nome-do-banco>
+    username: <usuario>
+    password: <senha>
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    database-platform: org.hibernate.dialect.MariaDBDialect
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+```
+> **Atenção:** Substitua `<host>`, `<porta>`, `<usuario>`, `<senha>` e `<nome-do-banco>` pelos dados do seu ambiente (ex: Railway, Docker, etc).
+
+#### Exemplo de Docker Compose para MariaDB:
+
+```yaml
+version: '3.8'
+services:
+  mariadb:
+    image: mariadb:11
+    environment:
+      MYSQL_DATABASE: quadrokaban
+      MYSQL_USER: devuser
+      MYSQL_PASSWORD: devpass
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+volumes:
+  mariadb_data:
+```
+
+#### Exemplo para H2 (opcional, para testes rápidos):
 
 Crie um arquivo `src/main/resources/application-h2.yml`:
 ```yaml
@@ -55,24 +114,7 @@ spring:
 ```
 Para ativar o perfil H2, altere em `application.yml` ou use variável de ambiente.
 
-#### Configuração para MariaDB (perfil `dev`):
-
-Veja `src/main/resources/application-dev.yml`:
-```yaml
-spring:
-  datasource:
-    url: jdbc:mariadb://127.0.0.1:3306/quadrokaban
-    username: devuser
-    password: devpass
-    driver-class-name: org.mariadb.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: none
-    show-sql: true
-    database-platform: org.hibernate.dialect.MariaDBDialect
-  liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.yaml
-```
+---
 
 ### 3. Execute a aplicação
 
@@ -90,6 +132,19 @@ Para usar outro perfil (ex: `prod` ou `h2`):
 ```
 
 A API estará disponível em `http://localhost:8080` (ou a porta configurada).
+
+---
+
+## ⚡ CI/CD
+
+O projeto possui integração contínua (CI) configurada com **GitHub Actions**.  
+A cada push ou pull request na branch principal, o pipeline executa:
+
+- Build do projeto
+- Execução de testes automatizados
+- Upload dos relatórios de teste como artefato
+
+O arquivo de configuração está em `.github/workflows/ci-cd.yml`.
 
 ---
 
@@ -185,7 +240,7 @@ Siga as instruções no terminal para navegar pelo menu e testar as funcionalida
 - [ ] Melhorar interface do CLI
 - [ ] Adicionar autenticação e autorização
 - [ ] Implementar testes automatizados 
-- [ ] Configurar CI/CD básico (ex: GitHub Actions)
+- [x] Configurar CI/CD básico (ex: GitHub Actions)
 - [ ] Implementar logging estruturado
 - [ ] Documentação OpenAPI/Swagger
 

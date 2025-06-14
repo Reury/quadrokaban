@@ -1,11 +1,13 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/minha_base_prod
-    username: postgres
-    password: senha_prod
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:mariadb://127.0.0.1:3306/quadrokaban
+    username: devuser
+    password: devpass
+    driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none # <--- importante!
     show-sql: false
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.MariaDBDialect
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml

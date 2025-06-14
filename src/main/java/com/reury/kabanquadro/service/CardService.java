@@ -15,8 +15,8 @@ public class CardService {
     @Autowired
     private CardRepository cardRepository;
 
-    @Autowired
-    private ColunaRepository colunaRepository;
+    // @Autowired
+    // private ColunaRepository colunaRepository;
 
     // Cria um novo card na coluna INICIAL do board
     public Card criarCard(String titulo, String descricao, Coluna colunaInicial) {
