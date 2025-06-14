@@ -30,6 +30,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Permitir execução do Gradle Wrapper
+        run: chmod +x ./gradlew
+
       - name: Build e Testes
         run: ./gradlew clean build test
 
