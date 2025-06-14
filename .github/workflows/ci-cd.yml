@@ -18,8 +18,6 @@ jobs:
           MYSQL_USER: devuser
           MYSQL_PASSWORD: devpass
           MYSQL_ROOT_PASSWORD: rootpass
-        ports:
-          - 3306:3306
         options: >-
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
