@@ -10,6 +10,22 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
+    services:
+      mariadb:
+        image: mariadb:11
+        env:
+          MYSQL_DATABASE: quadrokaban
+          MYSQL_USER: devuser
+          MYSQL_PASSWORD: devpass
+          MYSQL_ROOT_PASSWORD: rootpass
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
@@ -33,15 +49,21 @@ jobs:
       - name: Permitir execução do Gradle Wrapper
         run: chmod +x ./gradlew
 
+      - name: Esperar o MariaDB subir
+        run: |
+          for i in {1..30}; do
+            nc -z 127.0.0.1 3306 && echo "MariaDB está pronto!" && exit 0
+            echo "Aguardando MariaDB subir..."
+            sleep 2
+          done
+          echo "MariaDB não subiu a tempo." && exit 1
+
       - name: Build e Testes
         run: ./gradlew clean build test
 
-      # Exemplo de passo para gerar relatório de testes
       - name: Publicar resultados de testes
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: relatorios-testes
           path: build/reports/tests/test
-
-      # (Opcional) Passo para deploy pode ser adicionado aqui
