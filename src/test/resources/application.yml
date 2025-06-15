@@ -1,3 +1,15 @@
 spring:
   profiles:
     active: ci
+  datasource:
+    url: jdbc:mariadb://mariadb:3306/quadrokaban
+    username: devuser
+    password: devpass
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    database-platform: org.hibernate.dialect.MariaDBDialect
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml

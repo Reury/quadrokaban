@@ -5,10 +5,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import com.reury.kabanquadro.model.TipoColuna;
 
 @SpringBootTest
-@ActiveProfiles("ci") // ADICIONE ESTA LINHA
+@ActiveProfiles("ci")
+@TestPropertySource(properties = {
+    "spring.datasource.url=jdbc:mariadb://mariadb:3306/quadrokaban",
+    "spring.datasource.username=devuser",
+    "spring.datasource.password=devpass",
+    "spring.datasource.driver-class-name=org.mariadb.jdbc.Driver"
+})
 class BoardServiceTest {
 
     @Autowired
