@@ -31,6 +31,7 @@ public class BoardService {
             throw new IllegalArgumentException("Já existe um board com esse nome.");
         }
 
+
         // Criar board
         Board board = new Board();
         board.setNome(nome);

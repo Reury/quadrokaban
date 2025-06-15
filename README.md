@@ -238,9 +238,9 @@ Siga as instruções no terminal para navegar pelo menu e testar as funcionalida
 - [x] Implementar DAOs para consultas customizadas e otimização de queries
 - [ ] Evoluir o CLI para suportar relatórios e histórico
 - [ ] Melhorar interface do CLI
+- [x] Implementar testes automatizados
+- [x] Configurar CI/CD básico (ex: GitHub Actions) para rodar testes a cada commit na main
 - [ ] Adicionar autenticação e autorização
-- [ ] Implementar testes automatizados 
-- [x] Configurar CI/CD básico (ex: GitHub Actions)
 - [ ] Implementar logging estruturado
 - [ ] Documentação OpenAPI/Swagger
 
