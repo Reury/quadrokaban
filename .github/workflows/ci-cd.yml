@@ -10,6 +10,20 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MYSQL_DATABASE: quadrokaban
+          MYSQL_USER: devuser
+          MYSQL_PASSWORD: devpass
+          MYSQL_ROOT_PASSWORD: rootpass
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
@@ -31,14 +45,13 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Build e Testes
+        env:
+          SPRING_PROFILES_ACTIVE: ci
         run: ./gradlew clean build test
 
-      # Exemplo de passo para gerar relatório de testes
       - name: Publicar resultados de testes
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: relatorios-testes
           path: build/reports/tests/test
-
-      # (Opcional) Passo para deploy pode ser adicionado aqui
