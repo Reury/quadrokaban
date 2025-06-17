@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,8 +18,11 @@ public class BoardService {
     @Autowired
     private BoardRepository boardRepository;
 
-    @Autowired
-    private ColunaService colunaService;
+    // Construtor para uso em testes unitários
+    public BoardService(BoardRepository boardRepository) {
+        this.boardRepository = boardRepository;
+    }// @Autowired
+    // private ColunaService colunaService;
 
     public Board criarBoard(String nome) {
         // Validar nome
@@ -30,6 +32,7 @@ public class BoardService {
         if (boardRepository.existsByNome(nome)) {
             throw new IllegalArgumentException("Já existe um board com esse nome.");
         }
+
 
         // Criar board
         Board board = new Board();

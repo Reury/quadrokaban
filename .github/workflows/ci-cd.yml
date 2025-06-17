@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches: [ main,dev ]
 
 jobs:
   build-and-test:
@@ -33,12 +33,9 @@ jobs:
       - name: Build e Testes
         run: ./gradlew clean build test
 
-      # Exemplo de passo para gerar relatório de testes
       - name: Publicar resultados de testes
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: relatorios-testes
           path: build/reports/tests/test
-
-      # (Opcional) Passo para deploy pode ser adicionado aqui

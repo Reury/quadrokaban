@@ -6,5 +6,6 @@ public enum TipoColuna {
     INICIAL,
     PENDENTE,
     FINAL,
-    CANCELAMENTO
+    CANCELAMENTO,
+    PERSONALIZADA
 }

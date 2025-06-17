@@ -17,4 +17,6 @@ public class CardDto {
     private boolean bloqueado;
     private boolean arquivado;
     private Long colunaId;
+    private Long ultimaColunaId;
+    private LocalDateTime dataEntradaColuna;
 }
