@@ -1,21 +1,45 @@
 # QuadroKaban - Kanban API
 
+## 📋 Sobre o Projeto
+
 API REST para gerenciamento de quadros Kanban, cards, colunas, bloqueios, movimentações, relatórios e histórico de tarefas.
 
 ---
 
-## 🚀 Tecnologias
+## 🛠️ Tecnologias Utilizadas
 
-- Java 17+
-- Spring Boot 3
-- Spring Data JPA
-- MapStruct (mapeamento entre entidades e DTOs)
-- DAOs customizados para consultas otimizadas
-- **MariaDB** (banco padrão para todos os ambientes)
-- H2 (opcional para testes rápidos)
-- Gradle
+- **Java 17**
+- **Spring Boot 3.x**
+- **Spring Data JPA**
+- **MariaDB** (produção)
+- **H2** (testes)
+- **Liquibase** (migrations)
+- **MapStruct** (mapeamento de objetos)
+- **JUnit 5** (testes)
+- **Mockito** (mocks para testes unitários)
+- **Gradle** (build)
 
+
+## 🏗️ Arquitetura
+
+O projeto segue uma arquitetura em camadas:
+
+- **Controllers**: Endpoints REST
+- **Services**: Regras de negócio
+- **Repositories**: Acesso a dados
+- **DTOs**: Objetos de transferência de dados
+- **Mappers**: Conversão entre entidades e DTOs
+- **Models**: Entidades do domínio
 ---
+## 📊 Modelo de Dados
+
+O sistema trabalha com as seguintes entidades principais:
+
+- **Board**: Quadro Kanban
+- **Coluna**: Colunas do quadro (INICIAL, PENDENTE, FINAL, CANCELAMENTO, PERSONALIZADA)
+- **Card**: Cartões/tarefas
+- **Movimentacao**: Histórico de movimentações dos cards
+- **Bloqueio**: Controle de bloqueios dos cards
 
 ## ⚙️ Como rodar o projeto
 
@@ -54,24 +78,6 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.yaml
 ```
 
-#### Exemplo para MariaDB (produção):
-
-Veja `src/main/resources/application-prod.yml`:
-```yaml
-spring:
-  datasource:
-    url: jdbc:mariadb://<host>:<porta>/<nome-do-banco>
-    username: <usuario>
-    password: <senha>
-    driver-class-name: org.mariadb.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: none
-    show-sql: false
-    database-platform: org.hibernate.dialect.MariaDBDialect
-  liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.yaml
-```
 > **Atenção:** Substitua `<host>`, `<porta>`, `<usuario>`, `<senha>` e `<nome-do-banco>` pelos dados do seu ambiente (ex: Railway, Docker, etc).
 
 #### Exemplo de Docker Compose para MariaDB:
@@ -137,12 +143,12 @@ A API estará disponível em `http://localhost:8080` (ou a porta configurada).
 
 ## ⚡ CI/CD
 
-O projeto possui integração contínua (CI) configurada com **GitHub Actions**.  
-A cada push ou pull request na branch principal, o pipeline executa:
+O projeto utiliza GitHub Actions para integração contínua:
 
-- Build do projeto
-- Execução de testes automatizados
-- Upload dos relatórios de teste como artefato
+- **Build automático** em push/PR para main
+- **Execução de testes** sem dependências externas
+- **Cache do Gradle** para builds mais rápidos
+- **Relatórios de teste** automatizados
 
 O arquivo de configuração está em `.github/workflows/ci-cd.yml`.
 
@@ -187,29 +193,90 @@ Siga as instruções no terminal para navegar pelo menu e testar as funcionalida
 | POST   | `/api/boards/{boardId}/arquivar`         | Arquiva board                             |
 
 > Use ferramentas como Postman, Insomnia ou o navegador para testar os endpoints.
+---
+## 🧪 Testes
+
+O projeto utiliza duas estratégias de teste:
+
+### Testes Unitários (Mockito)
+- Testam a lógica de negócio isoladamente
+- Não dependem de banco de dados
+- Executam rapidamente
+- Localização: `src/test/java/com/reury/kabanquadro/service/`
+
+### Testes de Integração
+- Testam a aplicação completa
+- Utilizam banco H2 em memória
+- Validam o comportamento end-to-end
+
+```bash
+# Executar todos os testes
+./gradlew test
+
+# Executar apenas testes unitários
+./gradlew test --tests "*UnitTest"
+```
 
 ---
 
 ## 📝 Regras de Negócio Implementadas
 
-- Criação de boards com colunas obrigatórias (inicial, final, cancelamento)
-- Validação de nomes duplicados para boards e colunas
-- Criação, movimentação, bloqueio/desbloqueio, cancelamento e arquivamento de cards
-- Exclusão/arquivamento de boards, cards e colunas (com integridade)
-- Relatórios de tempo, bloqueios e resumo geral (apenas via API)
-- Histórico detalhado de cards (apenas via API)
-- Impedimento de remoção de colunas obrigatórias
+### 🎯 Gerenciamento de Boards
+- **Criação automática de colunas obrigatórias**: Todo board novo recebe automaticamente as colunas INICIAL, PENDENTE, FINAL e CANCELAMENTO
+- **Validação de unicidade**: Nomes de boards devem ser únicos no sistema
+- **Controle de estado**: Boards podem ser ativados/desativados e arquivados mantendo integridade referencial
+
+### 📋 Gerenciamento de Colunas
+- **Tipos de coluna**: Sistema suporta colunas padrão (INICIAL, PENDENTE, FINAL, CANCELAMENTO) e PERSONALIZADAS
+- **Controle de ordem**: Colunas são ordenadas automaticamente respeitando o fluxo do Kanban
+- **Proteção de colunas obrigatórias**: Colunas essenciais (INICIAL, FINAL, CANCELAMENTO) não podem ser removidas
+- **Validação de nomes**: Nomes de colunas devem ser únicos dentro do mesmo board
+
+### 🎴 Gerenciamento de Cards
+- **Ciclo de vida completo**: Cards podem ser criados, movimentados, bloqueados, desbloqueados, cancelados e arquivados
+- **Rastreamento de tempo**: Sistema registra automaticamente tempo de permanência em cada coluna
+- **Controle de bloqueios**: Cards bloqueados requerem motivo obrigatório para bloqueio e desbloqueio
+- **Histórico de movimentações**: Toda mudança de estado do card é registrada com timestamp
+
+### 📊 Relatórios e Análises
+- **Relatório de tempo**: Calcula tempo total e por coluna de cada card
+- **Relatório de bloqueios**: Identifica gargalos e cards frequentemente bloqueados
+- **Resumo de board**: Visão geral com métricas de produtividade
+- **Histórico detalhado**: Timeline completa de eventos de cada card
+
+### 🔒 Integridade e Segurança
+- **Exclusão em cascata**: Remoção de boards remove todos os dados relacionados
+- **Arquivamento seguro**: Dados arquivados são preservados mas não aparecem em consultas ativas
+- **Validação de fluxo**: Cards só podem ser movidos para colunas válidas respeitando o fluxo Kanban
 
 ---
 
 ## 🆕 Principais Alterações Recentes
 
-- **Implementação de DTOs** para todas as entidades expostas na API, aumentando a segurança e flexibilidade.
-- **Uso de MapStruct** para conversão automática entre entidades JPA e DTOs, reduzindo código repetitivo.
-- **Controllers agora expõem apenas DTOs**, seguindo boas práticas REST.
-- **Implementação de DAOs customizados** para consultas e relatórios otimizados.
-- **Endpoints REST para relatórios e histórico detalhado** integrados à API.
-- **Roadmap atualizado** para refletir as próximas melhorias planejadas.
+### 🏗️ Arquitetura e Design
+- **Implementação completa de DTOs**: Todas as entidades agora possuem DTOs correspondentes, garantindo exposição controlada de dados na API
+- **Integração com MapStruct**: Mapeamento automático e type-safe entre entidades JPA e DTOs, eliminando código boilerplate
+- **Separação de responsabilidades**: Controllers exclusivamente responsáveis por DTOs, nunca expondo entidades JPA diretamente
+
+### 🚀 Performance e Consultas
+- **DAOs customizados implementados**: Consultas otimizadas para relatórios complexos e operações de agregação
+- **Queries nativas para relatórios**: Consultas SQL otimizadas para melhor performance em relatórios de tempo e bloqueios
+- **Lazy loading configurado**: Relacionamentos JPA otimizados para evitar N+1 queries
+
+### 🧪 Qualidade e Testes
+- **Refatoração completa dos testes**: Migração para Mockito em testes unitários, eliminando dependência de banco real
+- **Testes de integração com H2**: Testes end-to-end usando banco em memória para maior velocidade
+- **CI/CD simplificado**: Pipeline otimizado sem dependências externas, executando apenas com JVM
+
+### 🔧 DevOps e Infraestrutura
+- **GitHub Actions configurado**: Build automático, execução de testes e cache de dependências
+- **Profiles de ambiente**: Configurações separadas para desenvolvimento, produção e testes
+- **Docker-ready**: Configurações preparadas para containerização futura
+
+### 📚 Documentação
+- **README expandido**: Documentação completa com exemplos, configuração e guias de desenvolvimento
+- **Endpoints documentados**: Tabela completa de endpoints REST com descrições detalhadas
+- **Roadmap atualizado**: Visão clara das próximas funcionalidades e melhorias planejadas
 
 ---
 
@@ -218,16 +285,6 @@ Siga as instruções no terminal para navegar pelo menu e testar as funcionalida
 - O projeto segue arquitetura em camadas: **controllers**, **services**, **DAOs** (para consultas customizadas), **repositories** (CRUD), **models** (entidades) e **DTOs**.
 - DAOs são usados para consultas complexas e relatórios, retornando DTOs prontos para a API.
 - Controllers nunca expõem entidades JPA diretamente, apenas DTOs.
-
----
-
-## 👨‍💻 Desenvolvimento
-
-- Para contribuir, crie uma branch, faça suas alterações e abra um Pull Request.
-- Para rodar testes, utilize:
-  ```bash
-  ./gradlew test
-  ```
 
 ---
 
