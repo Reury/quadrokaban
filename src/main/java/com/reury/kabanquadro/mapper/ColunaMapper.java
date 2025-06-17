@@ -7,8 +7,12 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface ColunaMapper {
     @Mapping(source = "board.id", target = "boardId")
+    @Mapping(target = "cards", ignore = true)
+    @Mapping(target = "bloqueado", ignore = true) 
     ColunaDto toDto(Coluna coluna);
 
-    @Mapping(source = "boardId", target = "board.id")
+    @Mapping(target = "board", ignore = true)
+    @Mapping(target = "cards", ignore = true)
+    @Mapping(target = "arquivado", ignore = true) 
     Coluna toEntity(ColunaDto dto);
 }

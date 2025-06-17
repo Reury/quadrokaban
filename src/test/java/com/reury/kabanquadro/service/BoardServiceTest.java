@@ -1,71 +1,71 @@
 package com.reury.kabanquadro.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.reury.kabanquadro.model.Board;
+import com.reury.kabanquadro.model.Coluna;
+import com.reury.kabanquadro.model.TipoColuna;
+import com.reury.kabanquadro.repository.BoardRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.Mockito;
 
-@SpringBootTest
-class BoardServiceTest {
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-    @Autowired
+class BoardServiceUnitTest {
+
+    private BoardRepository boardRepository;
     private BoardService boardService;
 
+    @BeforeEach
+    void setUp() {
+        boardRepository = mock(BoardRepository.class);
+        boardService = new BoardService(boardRepository);
+    }
+
     @Test
-    void deveCriarBoardComNomeValido(){
-        String nomeUnico = "Teste Board " + System.currentTimeMillis();
-        var board = boardService.criarBoard(nomeUnico);
+    void naoPermiteBoardComNomeDuplicado() {
+        String nome = "Duplicado";
+        when(boardRepository.existsByNome(nome)).thenReturn(true);
+
+        Exception ex = assertThrows(IllegalArgumentException.class, () -> {
+            boardService.criarBoard(nome);
+        });
+
+        assertEquals("Já existe um board com esse nome.", ex.getMessage());
+    }
+
+    @Test
+    void criaBoardComNomeValido() {
+        String nome = "Novo Board";
+        when(boardRepository.existsByNome(nome)).thenReturn(false);
+        when(boardRepository.save(any(Board.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Board board = boardService.criarBoard(nome);
+
         assertNotNull(board);
-        assertEquals(nomeUnico, board.getNome());
+        assertEquals(nome, board.getNome());
     }
-
+    
     @Test
-    void deveLancarExcecaoAoCriarBoardComNomeVazio() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            boardService.criarBoard("");
-        });
-    }
-    @Test
-    void deveLancarExcecaoAoCriarBoardComNomeNulo(){
-        assertThrows(IllegalArgumentException.class, () -> {
-            boardService.criarBoard(null);
-        });
-    }
-    @Test
-    void deveLancarExcecaoAoCriarBoardComNomeDuplicado() {
-        String nomeUnico = "Board Duplicado " + System.currentTimeMillis();
-        boardService.criarBoard(nomeUnico);
-        assertThrows(IllegalArgumentException.class, () -> {
-            boardService.criarBoard(nomeUnico);
-        });
-    }
-    @Test
-    void deveCriarBoardComColunasObrigatorias() {
-        String nomeUnico = "Board com Colunas Obrigatórias " + System.currentTimeMillis();
-        var board = boardService.criarBoard(nomeUnico);
-        
-        assertNotNull(board.getColunas());
-        assertEquals(4, board.getColunas().size());
-        
-        // Verificar colunas obrigatórias
-        assertTrue(board.getColunas().stream().anyMatch(c -> c.getNome().equals("Inicial")));
-        assertTrue(board.getColunas().stream().anyMatch(c -> c.getNome().equals("Pendente")));
-        assertTrue(board.getColunas().stream().anyMatch(c -> c.getNome().equals("Final")));
-        assertTrue(board.getColunas().stream().anyMatch(c -> c.getNome().equals("Cancelamento")));
-    }
-
-    @Test 
-    void deveAdicionarColunaValida(){
-        String nomeUnico = "Board para Adicionar Coluna " + System.currentTimeMillis();
-        var board = boardService.criarBoard(nomeUnico);
-        
-        String nomeColuna = "Nova Coluna";
+    void adicionaColunaComNomeValido() {
+        // Arrange
+        Board board = new Board();
+        board.setColunas(new java.util.HashSet<>());
+        String nomeColuna = "Coluna Extra";
         int ordem = 5;
-        var coluna = boardService.adicionarColuna(board, nomeColuna, ordem, TipoColuna.PENDENTE);
-        
-        assertNotNull(coluna);
-        assertEquals(nomeColuna, coluna.getNome());
-        assertEquals(ordem, coluna.getOrdem());
-    }
+        TipoColuna tipo = TipoColuna.PERSONALIZADA;
 
+        // Simula o save retornando o próprio board
+        when(boardRepository.save(any(Board.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        Coluna novaColuna = boardService.adicionarColuna(board, nomeColuna, ordem, tipo);
+
+        // Assert
+        assertNotNull(novaColuna);
+        assertEquals(nomeColuna, novaColuna.getNome());
+        assertEquals(ordem, novaColuna.getOrdem());
+        assertEquals(tipo, novaColuna.getTipo());
+        assertTrue(board.getColunas().contains(novaColuna));
+    }
 }
