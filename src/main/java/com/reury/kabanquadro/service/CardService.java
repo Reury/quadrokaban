@@ -15,6 +15,9 @@ public class CardService {
     @Autowired
     private CardRepository cardRepository;
 
+    public CardService(CardRepository cardRepository) {
+        this.cardRepository = cardRepository;
+    }
     // @Autowired
     // private ColunaRepository colunaRepository;
 
@@ -88,6 +91,10 @@ public class CardService {
 
     // Cancela o card (move para coluna de cancelamento)
     public Card cancelarCard(Card card) {
+
+        if (card.isBloqueado()) {
+            throw new IllegalStateException("Card está bloqueado e não pode ser cancelado.");
+        }
         // Verifica se o card já está na coluna de cancelamento
         if (card.getColuna().getTipo() == TipoColuna.CANCELAMENTO) {
             throw new IllegalStateException("Card já está na coluna de cancelamento.");
@@ -96,12 +103,7 @@ public class CardService {
         // Verifica se o card está na coluna FINAL
         if (card.getColuna().getTipo() == TipoColuna.FINAL) {
             throw new IllegalStateException("Não é permitido cancelar um card que já está na coluna FINAL.");
-        }
-
-        // Verifica se o card está bloqueado
-        if (card.isBloqueado()) {
-            throw new IllegalStateException("Card está bloqueado e não pode ser cancelado.");
-        }
+        } 
 
         // Busca a coluna de cancelamento
         Board board = card.getColuna().getBoard();
