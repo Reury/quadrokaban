@@ -77,6 +77,10 @@ public class BoardService {
             throw new IllegalArgumentException("Já existe uma coluna com essa ordem neste board.");
         }
 
+        if(!board.isAtivo()) {
+            throw new IllegalArgumentException("não é permitido adicionar colunas em board arquivado.");
+        }
+
         // Adicionar coluna
         Coluna novaColuna = new Coluna(nomeNovaColuna, ordem, tipoColuna, board);
         board.getColunas().add(novaColuna);
