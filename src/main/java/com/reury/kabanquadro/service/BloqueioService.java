@@ -30,6 +30,15 @@ public class BloqueioService {
 
     @Autowired
     private BoardRepository boardRepository;
+    
+    public BloqueioService(BloqueioRepository bloqueioRepository) {
+        this.bloqueioRepository = bloqueioRepository;
+    }
+    public BloqueioService(BloqueioRepository bloqueioRepository,BoardRepository boardRepository) {
+        this.bloqueioRepository = bloqueioRepository;
+            this.boardRepository = boardRepository;
+
+    }
 
     public List<BloqueioDto> listarBloqueiosPorBoard(Long boardId) {
         Board board = boardRepository.findById(boardId)
@@ -86,14 +95,13 @@ public class BloqueioService {
 
     // Desbloqueia um card
     public Bloqueio desbloquearCard(Card card, String motivo) {
-        // Verifica se o card está bloqueado
-        if (!card.isBloqueado()) {
-            throw new IllegalStateException("Card não está bloqueado.");
-        }
-
         // Verifica se o motivo do desbloqueio foi informado
         if (motivo == null || motivo.isBlank()) {
             throw new IllegalArgumentException("Motivo do desbloqueio é obrigatório.");
+        }
+        // Verifica se o card está bloqueado
+        if (!card.isBloqueado()) {
+            throw new IllegalStateException("Card não está bloqueado.");
         }
 
         // Busca o último registro de bloqueio para o card
