@@ -30,7 +30,9 @@ public class BloqueioService {
 
     @Autowired
     private BoardRepository boardRepository;
-    
+    public BloqueioService(){
+        
+    }
     public BloqueioService(BloqueioRepository bloqueioRepository) {
         this.bloqueioRepository = bloqueioRepository;
     }
